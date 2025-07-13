@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Progreso Ingeniería Industrial</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #fbe4f0;
+      color: #3d2352;
+      padding: 20px;
+    }
+    h1 {
+      color: #8e44ad;
+    }
+    h2 {
+      color: #c039a1;
+      border-bottom: 2px solid #c8a2c8;
+      margin-top: 40px;
+    }
+    .materia {
+      background: #fff0f6;
+      padding: 10px;
+      margin: 5px 0;
+      border-left: 6px solid #c39bd3;
+      border-radius: 6px;
+      opacity: 1;
+      transition: 0.3s;
+    }
+    .bloqueada {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+    label {
+      cursor: pointer;
+    }
+    input[type="checkbox"] {
+      margin-right: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📘 Progreso Ingeniería Industrial</h1>
+  <div id="contenedor"></div>
+
+  <script>
+    const materias = [
+      // === Semestre 1 ===
+      { id: "71201", nombre: "Dibujo Básico", semestre: 1, requisitos: [] },
+      { id: "70307", nombre: "Intro a la Ingeniería Industrial", semestre: 1, requisitos: [] },
+      { id: "61998", nombre: "Competencia Comunicativa", semestre: 1, requisitos: [] },
+      { id: "62700", nombre: "Electiva Contexto I", semestre: 1, requisitos: [] },
+      { id: "22135", nombre: "Cálculo I", semestre: 1, requisitos: [] },
+      { id: "230010", nombre: "Química General I", semestre: 1, requisitos: [] },
+
+      // === Semestre 2 ===
+      { id: "712032", nombre: "Geometría Descriptiva", semestre: 2, requisitos: ["71201"] },
+      { id: "21145", nombre: "Física I", semestre: 2, requisitos: ["22135"] },
+      { id: "70308", nombre: "Programación de Computadores", semestre: 2, requisitos: [] },
+      { id: "62701", nombre: "Electiva Contexto II", semestre: 2, requisitos: ["22135"] },
+      { id: "22003", nombre: "Álgebra Lineal", semestre: 2, requisitos: ["22135"] },
+      { id: "22137", nombre: "Cálculo II", semestre: 2, requisitos: ["22135"] },
+
+      // === Semestre 3 ===
+      { id: "21146", nombre: "Física II", semestre: 3, requisitos: ["21145"] },
+      { id: "70309", nombre: "Base de Datos", semestre: 3, requisitos: ["70308"] },
+      { id: "713081", nombre: "Estática", semestre: 3, requisitos: ["22137"] },
+      { id: "714713", nombre: "Materiales de Ingeniería", semestre: 3, requisitos: [] },
+      { id: "22147", nombre: "Cálculo Vectorial", semestre: 3, requisitos: ["22137"] },
+      { id: "656700", nombre: "Constitución Política", semestre: 3, requisitos: [] },
+
+      // === Semestre 4 ===
+      { id: "21147", nombre: "Física Electromagnética", semestre: 4, requisitos: ["21146"] },
+      { id: "70310", nombre: "Teoría y Diseño de Sistemas", semestre: 4, requisitos: ["713081"] },
+      { id: "714032", nombre: "Resistencia de Materiales", semestre: 4, requisitos: ["22147"] },
+      { id: "22076", nombre: "Ecuaciones Diferenciales", semestre: 4, requisitos: ["22147"] },
+      { id: "22351", nombre: "Estadística I", semestre: 4, requisitos: [] },
+      { id: "656710", nombre: "Leg. Laboral y Comercial", semestre: 4, requisitos: [] },
+
+      // === Semestre 5 ===
+      { id: "70314", nombre: "Gestión del Talento Humano", semestre: 5, requisitos: [] },
+      { id: "70312", nombre: "Ingeniería Administrativa", semestre: 5, requisitos: [] },
+      { id: "70313", nombre: "Ingeniería Financiera", semestre: 5, requisitos: [] },
+      { id: "70311", nombre: "Modelos Discretos", semestre: 5, requisitos: ["22076"] },
+      { id: "715010", nombre: "Termodinámica I", semestre: 5, requisitos: [] },
+      { id: "22352", nombre: "Estadística II", semestre: 5, requisitos: ["22351"] },
+
+      // === Semestre 6 ===
+      { id: "707701", nombre: "Electiva Prof. I", semestre: 6, requisitos: [] },
+      { id: "70315", nombre: "Ingeniería de Costos", semestre: 6, requisitos: ["70313"] },
+      { id: "703032", nombre: "Investigación de Operaciones I", semestre: 6, requisitos: [] },
+      { id: "702191", nombre: "Procesos Industriales", semestre: 6, requisitos: [] },
+      { id: "60103", nombre: "Ética", semestre: 6, requisitos: [] },
+      { id: "70109", nombre: "Ing. de Métodos y Tiempos", semestre: 6, requisitos: [] },
+
+      // === Semestre 7 ===
+      { id: "70104", nombre: "Ingeniería Económica", semestre: 7, requisitos: ["70315"] },
+      { id: "70316", nombre: "Diseño y Distr. de Plantas", semestre: 7, requisitos: ["70109"] },
+      { id: "707011", nombre: "Electiva Prof. II", semestre: 7, requisitos: [] },
+      { id: "701101", nombre: "Ingeniería de Operaciones I", semestre: 7, requisitos: ["703032"] },
+      { id: "703041", nombre: "Investigación de Operaciones II", semestre: 7, requisitos: ["703032"] },
+      { id: "70222", nombre: "Gestión de Mercadeo", semestre: 7, requisitos: [] },
+
+      // === Semestre 8 ===
+      { id: "707021", nombre: "Electiva Prof. III", semestre: 8, requisitos: [] },
+      { id: "701112", nombre: "Ingeniería de Operaciones II", semestre: 8, requisitos: ["701101"] },
+      { id: "70317", nombre: "Logística", semestre: 8, requisitos: ["701101"] },
+      { id: "70318", nombre: "Simulación", semestre: 8, requisitos: ["703041"] },
+      { id: "70111", nombre: "Control de Calidad", semestre: 8, requisitos: ["22352"] },
+      { id: "70108", nombre: "Formulación de Proyectos", semestre: 8, requisitos: ["70104"] },
+
+      // === Semestre 9 ===
+      { id: "707031", nombre: "Electiva Prof. IV", semestre: 9, requisitos: [] },
+      { id: "70319", nombre: "Seminario de Investigación", semestre: 9, requisitos: [] },
+      { id: "72404", nombre: "Ingeniería Ambiental", semestre: 9, requisitos: [] },
+      { id: "70216", nombre: "Gestión de la Calidad", semestre: 9, requisitos: ["70111"] },
+      { id: "70211", nombre: "Gestión Tecnológica", semestre: 9, requisitos: [] },
+      { id: "70225", nombre: "Salud Ocupacional", semestre: 9, requisitos: [] },
+
+      // === Opción de Grado ===
+      { id: "70320", nombre: "Opción de Grado", semestre: 10, requisitos: [] }
+    ];
+
+    function cargarEstado(id) {
+      return localStorage.getItem(id) === "true";
+    }
+
+    function guardarEstado(id, estado) {
+      localStorage.setItem(id, estado);
+    }
+
+    function renderizarMaterias() {
+      const contenedor = document.getElementById("contenedor");
+      contenedor.innerHTML = "";
+
+      const porSemestre = {};
+      materias.forEach(m => {
+        if (!porSemestre[m.semestre]) porSemestre[m.semestre] = [];
+        porSemestre[m.semestre].push(m);
+      });
+
+      Object.keys(porSemestre).sort((a, b) => a - b).forEach(semestre => {
+        const h2 = document.createElement("h2");
+        h2.textContent = `📚 Semestre ${semestre}`;
+        contenedor.appendChild(h2);
+
+        porSemestre[semestre].forEach(materia => {
+          const completadas = materia.requisitos.every(r => cargarEstado(r));
+          const estado = cargarEstado(materia.id);
+
+          const div = document.createElement("div");
+          div.className = "materia" + (completadas ? "" : " bloqueada");
+
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.checked = estado;
+          checkbox.disabled = !completadas;
+          checkbox.addEventListener("change", () => {
+            guardarEstado(materia.id, checkbox.checked);
+            renderizarMaterias();
+          });
+
+          const label = document.createElement("label");
+          label.textContent = materia.nombre;
+
+          div.appendChild(checkbox);
+          div.appendChild(label);
+          contenedor.appendChild(div);
+        });
+      });
+    }
+
+    renderizarMaterias();
+  </script>
+
+</body>
+</html>
